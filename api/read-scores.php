@@ -15,19 +15,18 @@
   $scoreboard->gamePitPattern = '%'.$_POST['pitValue'].'%';
   $scoreboard->gameLevelPattern = '%'.$_POST['levelValue'].'%';
   $scoreboard->devicePattern = '%'.$_POST['deviceValue'].'%';
+  $scoreboard->pageNoValue = (int) $_POST['pageNoValue'];
 
   // Get All Scores
-  $result = $scoreboard->read();
+  $result = $scoreboard->readPagination();
 
   // If There's More Than One Row
   if($result->rowCount()) {
-    $firstRow = true; // Variable for Identifying the First Row
-    $countRow = 1; // Variable for Counting Row
+    $countRow = (($scoreboard->pageNoValue -  1) * 200) + 1; // Variable for Counting Row
 
     while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-      if($firstRow) {
+      if($countRow == 1) {
         echo '<div class="sb-row first-row">';
-        $firstRow = false;
       } else {
         echo '<div class="sb-row">';
       }

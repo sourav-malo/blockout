@@ -76,6 +76,14 @@
         </div>
       </div>
     </div>
+    <!-- Pagination -->
+    <form class="pagination-form" id="pagination-form" method="POST">
+      <span class="page-count-container">
+        (<span class="cur-page-count" id="cur-page-count">2</span>/<span class="total-page-count" id="total-page-count">10</span>)
+      </span>
+      <input type="number" class="page-no-inp" id="page-no-inp"/>
+      <button class="pagination-btn">Go</button>
+    </form>
   </div>
 </body>
 </html>

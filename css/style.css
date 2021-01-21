@@ -464,3 +464,38 @@ a.play-btn:hover {
   height: 400px;
   border: 1px solid white;
 }
+
+.pagination-form {
+  margin: 40px 0;
+  text-align: center;
+}
+
+.page-no-inp,
+.pagination-btn {
+  width: 60px;
+  padding: 5px;
+  margin: 0 10px;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.page-count-container {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.pagination-btn {
+  margin: 0;
+  background-color: rgb(247, 239, 41);
+  color: #131313;
+  border: none;
+  outline: none;
+}
+
+.pagination-btn:hover {
+  cursor: pointer;
+  background-color: rgba(247, 239, 41, .8);
+}

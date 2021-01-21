@@ -21,6 +21,7 @@
     public $gamePitPattern;    
     public $gameLevelPattern;
     public $devicePattern;
+    public $pageNoValue;
 
     // Constructor with DB
     public function __construct($db) {
@@ -115,6 +116,42 @@
           PC_Phone LIKE :devicePattern
         ORDER BY 
           playerScore DESC;";
+
+      // Prepare Statement
+      $stmt = $this->conn->prepare($query);
+
+      // Bind Data
+      $stmt->bindParam(':gameSetPattern', $this->gameSetPattern);
+      $stmt->bindParam(':gamePitPattern', $this->gamePitPattern);
+      $stmt->bindParam(':gameLevelPattern', $this->gameLevelPattern);
+      $stmt->bindParam(':devicePattern', $this->devicePattern);
+
+      // Execute Statement
+      $stmt->execute();
+
+      return $stmt;
+    }
+
+    // Read Scores
+    public function readPagination() {
+      $startRow = ($this->pageNoValue - 1) * 200;
+
+      // Create Query
+      $query = "SELECT *
+        FROM
+          $this->table
+        WHERE
+          gameSet LIKE :gameSetPattern
+        AND
+          gamePit LIKE :gamePitPattern
+        AND
+          gameLevel LIKE :gameLevelPattern
+        AND
+          PC_Phone LIKE :devicePattern
+        ORDER BY 
+          playerScore DESC
+        LIMIT
+          $startRow, 200;";
 
       // Prepare Statement
       $stmt = $this->conn->prepare($query);
