@@ -1,5 +1,5 @@
 <?php
-  $conn = mysqli_connect("localhost", "souravma_blockout", "souravma_blockout", "souravma_blockout");
+  $conn = mysqli_connect("localhost", "gamerea_cubeoutt", "gamerea_cubeout", "cubeoutmagi");
   $sql = "SELECT * FROM scoreboard WHERE cityName = '';";
   $result = mysqli_query($conn, $sql);
   while($row = mysqli_fetch_assoc($result)) {
@@ -12,6 +12,5 @@
 
     $sql_new = "UPDATE scoreboard SET cityName = '$city' WHERE id = $id;";
     mysqli_query($conn, $sql_new);
-    echo $id."</br>";
   }
 ?>
