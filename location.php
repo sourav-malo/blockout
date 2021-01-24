@@ -25,12 +25,12 @@
           <div class="location-details-value"><?php echo $ipdat->geoplugin_countryName; ?></div>
         </div>
         <div class="location-details-item">
-          <div class="location-details-key">City:</div>
-          <div class="location-details-value"><?php echo $ipdat->geoplugin_city; ?></div>
-        </div>
-        <div class="location-details-item">
           <div class="location-details-key">Region:</div>
           <div class="location-details-value" id="region"><?php echo $ipdat->geoplugin_region; ?></div>
+        </div>
+        <div class="location-details-item">
+          <div class="location-details-key">City:</div>
+          <div class="location-details-value"><?php echo $ipdat->geoplugin_city; ?></div>
         </div>
         <div class="location-details-item">
           <div class="location-details-key">Timezone:</div>
