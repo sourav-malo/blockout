@@ -5,6 +5,7 @@
     <meta name="description" content="Remake of classic puzzle game Blockout (3d tetris) in HTML 5" />
     <meta name='viewport' content='initial-scale=1.0,user-scalable=0' >
     <title>BlockOut</title>
+    <link rel="icon" href="css/blockout.png" type="image/gif" sizes="16x16"> 
     <link type="text/css" rel="stylesheet" href="css/cubeout.css" />
     <link type="text/css" rel="stylesheet" href="css/style.css" />
     <script defer type="text/javascript" src="js/jquery-1.4.2.min.js"></script>

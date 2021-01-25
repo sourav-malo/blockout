@@ -7,6 +7,7 @@
   <title>Global Scoreboard - BlockOut</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="css/blockout.png" type="image/gif" sizes="16x16"> 
   <script src="js/scoreboard.js" defer></script>
 </head>
 <body>
@@ -79,7 +80,7 @@
     <!-- Pagination -->
     <form class="pagination-form" id="pagination-form" method="POST">
       <span class="page-count-container">
-        (<span class="cur-page-count" id="cur-page-count">2</span>/<span class="total-page-count" id="total-page-count">10</span>)
+        (<span class="cur-page-count" id="cur-page-count"></span>/<span class="total-page-count" id="total-page-count"></span>)
       </span>
       <input type="number" class="page-no-inp" id="page-no-inp"/>
       <button class="pagination-btn">Go</button>
