@@ -2,7 +2,7 @@
   class Database {
     // DB Params
     // private $host = 'localhost';
-    // private $db_name = 'scoreboard';
+    // private $db_name = 'gamearea_cubeout';
     // private $username = 'root';
     // private $password = '';
     // private $conn;

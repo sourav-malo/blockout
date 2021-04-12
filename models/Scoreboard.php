@@ -21,6 +21,8 @@
     public $gamePitPattern;    
     public $gameLevelPattern;
     public $devicePattern;
+    public $countryNamePattern;
+    public $cityNamePattern;
     public $pageNoValue;
 
     // Constructor with DB
@@ -113,6 +115,10 @@
         AND
           gameLevel LIKE :gameLevelPattern
         AND
+          countryName LIKE :countryNamePattern
+        AND
+          (cityName LIKE :cityNamePattern OR (cityName IS NULL AND LENGTH(:cityNamePattern) = 2))
+        AND
           PC_Phone LIKE :devicePattern
         ORDER BY 
           playerScore DESC;";
@@ -124,6 +130,8 @@
       $stmt->bindParam(':gameSetPattern', $this->gameSetPattern);
       $stmt->bindParam(':gamePitPattern', $this->gamePitPattern);
       $stmt->bindParam(':gameLevelPattern', $this->gameLevelPattern);
+      $stmt->bindParam(':countryNamePattern', $this->countryNamePattern);
+      $stmt->bindParam(':cityNamePattern', $this->cityNamePattern);
       $stmt->bindParam(':devicePattern', $this->devicePattern);
 
       // Execute Statement
@@ -147,6 +155,10 @@
         AND
           gameLevel LIKE :gameLevelPattern
         AND
+          countryName LIKE :countryNamePattern
+        AND
+          (cityName LIKE :cityNamePattern OR (cityName IS NULL AND LENGTH(:cityNamePattern) = 2))
+        AND
           PC_Phone LIKE :devicePattern
         ORDER BY 
           playerScore DESC
@@ -160,6 +172,8 @@
       $stmt->bindParam(':gameSetPattern', $this->gameSetPattern);
       $stmt->bindParam(':gamePitPattern', $this->gamePitPattern);
       $stmt->bindParam(':gameLevelPattern', $this->gameLevelPattern);
+      $stmt->bindParam(':countryNamePattern', $this->countryNamePattern);
+      $stmt->bindParam(':cityNamePattern', $this->cityNamePattern);
       $stmt->bindParam(':devicePattern', $this->devicePattern);
 
       // Execute Statement
@@ -203,6 +217,48 @@
 
       // Bind Data
       $stmt->bindParam(':id', $this->id);
+
+      // Execute Statement
+      $stmt->execute();
+
+      return $stmt;
+    }
+
+    // Read Unique Countries
+    public function readUniqueCountries() {
+      // Create Query
+      $query = "SELECT 
+        DISTINCT countryName
+      FROM
+        $this->table
+      WHERE 
+        countryName IS NOT NULL
+      AND 
+        LENGTH(countryName) <> 0;";
+
+      // Prepare Statement
+      $stmt = $this->conn->prepare($query);
+
+      // Execute Statement
+      $stmt->execute();
+
+      return $stmt;
+    }
+
+    // Read Unique Cities
+    public function readUniqueCities() {
+      // Create Query
+      $query = "SELECT 
+        DISTINCT cityName
+      FROM
+        $this->table
+      WHERE 
+        cityName IS NOT NULL
+      AND
+        LENGTH(cityName) <> 0;";
+
+      // Prepare Statement
+      $stmt = $this->conn->prepare($query);
 
       // Execute Statement
       $stmt->execute();

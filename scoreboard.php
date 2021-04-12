@@ -1,5 +1,17 @@
 <!-- sourav_malo :: Full Page Starts -->
 
+<?php
+  include_once 'config/Database.php';
+  include_once 'models/Scoreboard.php';
+
+  // Instantiate DB & Connect
+  $database = new Database();
+  $db = $database->connect();
+
+  // Instantiate Scoreboard Object
+  $scoreboard = new Scoreboard($db);
+?>
+
 <!DOCTYPE html>
 <html style="font-family: 'Roboto', sans-serif;">
 <head>
@@ -20,8 +32,8 @@
           <label for="set">Set:</label>
           <select id="set">
             <option value="">All</option>
-            <option value="BASIC">Basic</option>
             <option value="FLAT">Flat</option>
+            <option value="BASIC">Basic</option>
             <option value="EXTENDED">Extended</option>
           </select>
         </div>
@@ -53,6 +65,34 @@
             <option value="Phone">Phone</option>
           </select>
         </div>
+        <div class="input-group">
+          <label for="countries">Countries:</label>
+          <select id="countries">
+            <option value="">All</option>
+            <?php 
+              $countriesStmt = $scoreboard->readUniqueCountries();
+              $countries = $countriesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+              foreach ($countries as $country) {
+                echo "<option value='".$country['countryName']."'>".$country['countryName']."</option>";
+              }
+            ?>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="cities">Cities:</label>
+          <select id="cities">
+            <option value="">All</option>
+            <?php 
+              $citiesStmt = $scoreboard->readUniqueCities();
+              $cities = $citiesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+              foreach ($cities as $city) {
+                echo "<option value='".$city['cityName']."'>".$city['cityName']."</option>";
+              }
+            ?>
+          </select>
+        </div>
         <button class="sb-submit">VIEW</button>
       </form>
     </div>
@@ -68,7 +108,7 @@
             <span class="sb-col score">Score</span>
             <span class="sb-col played-at">Played At (UTC +0)</span>
             <span class="sb-col country">Country</span>
-            <span class="sb-col ip-address">Gamer Map</span>
+            <span class="sb-col ip-address">City</span>
             <span class="sb-col pc_phone">PC/Phone</span>
           </div>
         </div>
