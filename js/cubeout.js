@@ -1126,7 +1126,7 @@ window.onload = (event) => {
 
 
 // sourav_malo :: Game Object
-let game = {
+var game = {
   cubesPlayed : 0,
   createStatus : false,
   id : '',
@@ -2694,42 +2694,6 @@ function init_game_keys(canvas, ctx) {
 
 }
 
-
-function end_game(canvas, ctx) {
-  // sourav_malo :: Initialize score as game ends
-  game.score = parseInt(document.querySelector('#score').innerText);
-  // sourav_malo :: Initialize score as game ends
-  $(document).unbind('keydown');
-  const PC_Phone = (typeof window.orientation !== 'undefined') ? 'Phone' : 'PC'; 
-
-  // sourav_malo :: Save Score in DB and Cookie
-  var xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "api/create-score.php", true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.onreadystatechange = function() {
-    if(this.readyState == 4 && this.status == 200) {
-      
-	  console.log(this.responseText);
-	  const responseText = JSON.parse(this.responseText);
-      if(responseText.status == "success") {
-        game.createStatus = true;
-        game.id = responseText.data.id;
-        game.playedAt = responseText.data.playedAt;
-        game.countryName = responseText.data.countryName;
-        game.ipAddress = responseText.data.ipAddress;
-        createUpdateBlockoutCookie(); // create cookie
-      }
-
-      // author's code
-      set_ui_gameover();
-      CANVAS = canvas;
-      CTX = ctx;
-    }
-  };
-  xhttp.send(`PC_Phone=${PC_Phone}&playerName=${game.playerName}&gameSet=${game.set}&gamePit=${game.pit}&gameLevel=${game.level}&playerScore=${game.score}`);
-  // sourav_malo :: Save Score in DB and Cookie
-}
-
 function handle_key(e, canvas, ctx) {
   if (STATE.paused) {
     pause(canvas, ctx);
@@ -2885,10 +2849,9 @@ function play_game(canvas, ctx, start_handler) {
   game_over_flag = false;
   
   // sourav_malo :: Initialize level, set, pit as game starts
-  game.level = document.querySelector('#speedSelect .button.on').innerText.trim();
-  game.pit = document.querySelector('#pit .button.on').innerText.trim();
-  game.set = document.querySelector('#pieces .button.on').innerText.trim();
-  console.log(game);
+  game.level = $('#speedSelect .button.on').text().trim();
+  game.pit = $('#pit .button.on').text().trim();
+  game.set = $('#pieces .button.on').text().trim();
   // sourav_malo :: Initialize level, set, pit as game starts
   
   $(document).unbind('keydown', start_handler);
@@ -3062,7 +3025,6 @@ function touchdown() {
   $('#cubes_played').text(game.cubesPlayed);
   /* sourav_malo :: Updates Cube Count on touch down */
 
-
   refresh_column();
 }
 
@@ -3176,19 +3138,6 @@ function set_ui_game() {
   $('.hud').css('display', 'none');
   $('#score').css('display', 'block');
   $('#column').css('display', 'block');
-  
-    /* sourav_malo :: Validating game username */
-  const usernameRegex = /^[A-Za-z0-9_]+$/; // Initializing username Regex
-  const usernameInput = document.querySelector('#username'); // Initlializing usernameInput field
-
-  usernameInput.addEventListener('input', () => {
-    if((usernameRegex.test(usernameInput.value) && usernameInput.value.length > 0 && usernameInput.value.length < 20) || (!usernameInput.value.length)) {
-      usernameInput.classList.remove('wrong');
-    } else {
-      usernameInput.classList.add('wrong');
-    }
-  });
-  /* sourav_malo :: Validating game username */
 }
 
 function set_ui_gameover() {
@@ -3626,141 +3575,198 @@ function showScoreUIAuthor() {
   game_over_flag = false;
 }
 
-// sourav_malo :: Update Score DB by AJAX
-function updateScore() {
-  return new Promise((resolve, reject) => {
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "api/update-score.php", true);
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.onreadystatechange = function() {
-      if(this.readyState == 4 && this.status == 200) {
-        resolve(this.responseText);
-      }
-    };
-    xhttp.send(`id=${parseInt(game.id)}&playerName=${game.playerName}`);
-  });
-}
-// sourav_malo :: Update Score DB by AJAX
+/* sourav_malo :: clean code begins */
+function validateUsername(event) {
+  var validUsernameRegex = /^[A-Za-z0-9_]+$/;
+  var usernameInp = $(event.target); 
 
-// sourav_malo :: Check username availability
-function checkUsername() {
-  return new Promise((resolve, reject) => {
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "api/check-username.php", true);
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.onreadystatechange = function() {
-      if(this.readyState == 4 && this.status == 200) {
-        resolve(this.responseText);
-      }
-    };
-    xhttp.send(`playerName=${game.playerName}`);
-  });
-}
-// sourav_malo :: Check username availability
-
-// sourav_malo:: Form Submit
-function showScoreUI(event) {
-  event.preventDefault();
-  // successful insertion operation
-  if(game.createStatus) {
-    const usernameSubmitBtn = document.querySelector('.username-submit-btn');
-    // no request is being processed at this moment
-    if(!usernameSubmitBtn.classList.contains('not-allowed')) {
-      usernameSubmitBtn.classList.add('not-allowed'); // disallowing repeated submissions
-      const usernameInput = document.querySelector('#username');
-      // username is relevant to the constraints
-      if(!usernameInput.classList.contains('wrong')) {
-        game.playerName = usernameInput.value;
-        // non empty name insertion
-        if(game.playerName.length) {
-          checkUsername().then(response => {
-            // username already exists
-            if(response > 0) {
-              // saving empty username
-              if(confirm("Oops! Username already exists. Do you want to save an empty username?")) {
-                game.playerName = '';
-                usernameInput.setAttribute('value', '');  // Making Username Empty
-                usernameSubmitBtn.classList.remove('not-allowed'); // allowing submission again
-                showScoreUIAuthor(); // Invoking showScoreUIAuthor() to see score
-              // submit again
-              } else {
-                usernameSubmitBtn.classList.remove('not-allowed'); // allowing submission again
-              }
-            // new username
-            } else {
-              updateScore().then(response => {
-                // successful update in DB
-                if(response) {
-                  createUpdateBlockoutCookie(); // Invoking createUpdateBlockoutCookie() to update name cookie
-                  showScoreUIAuthor(); // Invoking showScoreUIAuthor() to see score
-                // unsuccessful update in DB
-                } else {
-                  alert("Network Error! Please, try again.");
-                }
-                usernameSubmitBtn.classList.remove('not-allowed'); // allowing submission again
-              });
-            }
-          });
-        // empty name insertion
-        } else {
-          // save score by previously saved cookie name
-          if(confirm(`Ouch! Empty name inserted. Do you want to save your score by recently inserted name?`)) {
-            game.playerName = getLastBlockoutCookiePlayerName();
-            updateScore().then(response => {
-              // successful update in DB
-              if(response) {
-                usernameInput.setAttribute('value', '');  // Making Username Empty
-                createUpdateBlockoutCookie(); // Invoking createUpdateBlockoutCookie() to update name cookie
-                showScoreUIAuthor(); // Invoking showScoreUIAuthor() to see score
-              // unsuccessful update in DB
-              } else {
-                alert("Network Error! Please, try again.");
-              }
-              usernameSubmitBtn.classList.remove('not-allowed'); // allowing submission again
-            });
-          // saving the empty name
-          } else {
-            usernameInput.setAttribute('value', ''); // Making Username Empty
-            showScoreUIAuthor(); // Invoking showScoreUIAuthor() to see score
-            game.createStatus = false;
-            usernameSubmitBtn.classList.remove('not-allowed'); // allowing submission again
-          }
-        }
-      // username is irrelevant to the constraints
-      } else {
-        usernameSubmitBtn.classList.remove('not-allowed'); // allowing submission again
-      }
-    }
-  // unsuccessful insertion operation
-  } else {
-    showScoreUIAuthor(); // Invoking showScoreUIAuthor() to see score
+  if((validUsernameRegex.test(usernameInp.val()) && usernameInp.val().length > 0 && usernameInp.val().length < 20) || (!usernameInp.val().length)) {
+    usernameInp.removeClass('wrong');
+    return;
   }
-}
-// sourav_malo:: Form Submit
 
-/* sourav_malo :: Update High Score */
-function updateHighScore(gameLevel, gamePit, gameSet) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "api/read-high-score.php", true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.onreadystatechange = function() {
-    if(this.readyState == 4 && this.status == 200) {
-      document.querySelector('#high_score').innerText = this.responseText;
-    }
-  };
-  xhttp.send(`gameSet=${gameSet}&gamePit=${gamePit}&gameLevel=${gameLevel}`);
+  usernameInp.addClass('wrong');
 }
 
-[
- document.querySelector('#speedSelect'), 
- document.querySelector('#pit'), 
- document.querySelector('#pieces')
-].forEach(setting => {
-  setting.addEventListener('change', () => {
-    updateHighScore(document.querySelector('#speedSelect').value, document.querySelector('#pit').value, document.querySelector('#pieces').value);
+async function end_game(canvas, ctx) {
+  game.score = parseInt($('#score').text());
+
+  $(document).unbind('keydown');
+
+  var PC_Phone = (typeof window.orientation !== 'undefined') ? 'Phone' : 'PC'; 
+
+  var res = await fetch('api/create-score.php', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      'playerName': game.playerName,
+      'gameSet': game.set,
+      'gamePit': game.pit,
+      'gameLevel': game.level,
+      'playerScore': game.score,
+      'PC_Phone': PC_Phone
+    })
   });
-});
 
-updateHighScore(document.querySelector('#speedSelect').value, document.querySelector('#pit').value, document.querySelector('#pieces').value);
+  res = await res.json();
 
-/* sourav_malo :: Update High Score */
+  if(res.status != 'success') return;
+
+  game.createStatus = true;
+  game.id = res.data.id;
+  game.playedAt = res.data.playedAt;
+  game.countryName = res.data.countryName;
+  game.ipAddress = res.data.ipAddress;
+
+  createUpdateBlockoutCookie();
+
+  // author's code
+  set_ui_gameover();
+  CANVAS = canvas;
+  CTX = ctx;
+}
+
+async function updateHighScore() {
+  var res = await fetch('api/read-high-score.php', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      'gameSet': $('#pieces').val(),
+      'gamePit': $('#pit').val(),
+      'gameLevel': $('#speedSelect').val()
+    })
+  });
+
+  res = await res.json();
+
+  if(res.status != 'success') return;
+
+  $('#high_score').text(res.data); 
+}
+
+updateHighScore();
+
+function updateScore() {
+  return new Promise(function(resolve, reject) {
+    fetch('api/update-score.php', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        'id': parseInt(game.id),
+        'playerName': game.playerName
+      })
+    })
+    .then(res => res.json())
+    .then(data => resolve(data))
+    .catch(err => reject(err));
+  });
+}
+
+function readUsername() {
+  return new Promise(function(resolve, reject) {
+    fetch('api/read-username.php', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        'playerName': game.playerName
+      })
+    })
+    .then(res => res.json())
+    .then(data => resolve(data))
+    .catch(err => reject(err));
+  });
+}
+
+async function saveScoreByRecentlyInsertedUsername(usernameSubmitBtn, usernameInp) {
+  game.playerName = getLastBlockoutCookiePlayerName();
+
+  var res = await updateScore();
+
+  if(res.status != 'success') {
+    alert("Error occured! Please, try again.");
+    usernameSubmitBtn.removeClass('not-allowed');
+  }
+
+  usernameInp.val('');
+  createUpdateBlockoutCookie();
+  usernameSubmitBtn.removeClass('not-allowed');
+  showScoreUIAuthor();
+}
+
+function saveScoreByEmptyUsername(usernameSubmitBtn, usernameInp) {
+  usernameInp.val('');
+  game.createStatus = false;
+  usernameSubmitBtn.removeClass('not-allowed');
+  showScoreUIAuthor();
+}
+
+async function saveScorebyNewlyInsertedUsername(usernameSubmitBtn, usernameInp) {
+  var res = await updateScore();
+
+  if(res.status != 'success') {
+    alert("Error occured! Please, try again.");
+    usernameSubmitBtn.removeClass('not-allowed');
+    return;
+  }
+
+  createUpdateBlockoutCookie();
+  usernameInp.val('');
+  usernameSubmitBtn.removeClass('not-allowed');
+  showScoreUIAuthor();
+}
+
+function askForEmptyUsernameInsertion(usernameSubmitBtn, usernameInp) {
+  if(confirm("Oops! Username already exists. Do you want to save an empty username?")) {
+    game.playerName = '';
+    usernameInp.val('');
+    usernameSubmitBtn.removeClass('not-allowed');
+    showScoreUIAuthor();
+  } 
+
+  usernameSubmitBtn.removeClass('not-allowed');
+}
+
+function emptyUsernameInsertionProcess(usernameSubmitBtn, usernameInp) {
+  confirm('Ouch! Empty name inserted. Do you want to save your score by recently inserted name?') ? saveScoreByRecentlyInsertedUsername(usernameSubmitBtn, usernameInp) : saveScoreByEmptyUsername(usernameSubmitBtn, usernameInp);
+}
+
+async function nonEmptyUsernameInsertionProcess(usernameSubmitBtn, usernameInp) {
+  var res = await readUsername();
+
+  (res.status != 'success') ? saveScorebyNewlyInsertedUsername(usernameSubmitBtn, usernameInp) : askForEmptyUsernameInsertion(usernameSubmitBtn, usernameInp);
+}
+
+function showScoreUI() {
+  if(!game.createStatus) {
+    showScoreUIAuthor();
+    return;
+  }
+
+  var usernameSubmitBtn = $('.username-submit-btn');
+
+  if(usernameSubmitBtn.hasClass('not-allowed')) return;
+
+  usernameSubmitBtn.addClass('not-allowed');
+  var usernameInp = $('#username');
+
+  if(usernameInp.hasClass('wrong')) {
+    usernameSubmitBtn.removeClass('not-allowed');
+    return;
+  }
+
+  game.playerName = usernameInp.val();
+
+  (game.playerName == '') ? emptyUsernameInsertionProcess(usernameSubmitBtn, usernameInp) : nonEmptyUsernameInsertionProcess(usernameSubmitBtn, usernameInp);
+}

@@ -1,4 +1,4 @@
-<?php
+<?php 
   header('Content-type: application/json');
 
   include_once '../config/Database.php';
@@ -15,13 +15,12 @@
   $data = json_decode(file_get_contents('php://input'));
 
   // Set Properties
-  $scoreboard->id = $data->id;
   $scoreboard->playerName = $data->playerName;
 
-  // Update Score stmt
-  $stmt = $scoreboard->update();
+  // Get all rows stmt
+  $stmt = $scoreboard->readSingleByName();
 
-  if(!$stmt) {
+  if(!$stmt->rowCount()) {
     echo json_encode(['status' => 'failure']);
     exit();
   }

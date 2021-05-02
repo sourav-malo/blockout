@@ -1,4 +1,6 @@
 <?php
+  header('Content-type: application/json');
+
   include_once '../config/Database.php';
   include_once '../models/Scoreboard.php';
   include_once '../php/datetime.php';
@@ -10,46 +12,50 @@
   // Instantiate Scoreboard Object
   $scoreboard = new Scoreboard($db);
 
+  // Get raw pasted data
+  $data = json_decode(file_get_contents('php://input'));
+
   // Set Properties
-  $scoreboard->playerName = $_POST['playerName'];
-  $scoreboard->gameSet = $_POST['gameSet'];
-  $scoreboard->gamePit = $_POST['gamePit'];
-  $scoreboard->gameLevel = $_POST['gameLevel'];
-  $scoreboard->playerScore = $_POST['playerScore'];
-  $scoreboard->ipAddress = $scoreboard->getIPAddress();
-  $scoreboard->cityName = $scoreboard->getCityName();
-  $scoreboard->countryName = $scoreboard->getCountryName();
-  $scoreboard->PC_Phone = $_POST['PC_Phone'];
+  $scoreboard->playerName = $data->playerName;
+  $scoreboard->gameSet = $data->gameSet;
+  $scoreboard->gamePit = $data->gamePit;
+  $scoreboard->gameLevel = $data->gameLevel;
+  $scoreboard->playerScore = $data->playerScore;
+  $scoreboard->getIPAddress();
+  $scoreboard->getCityName();
+  $scoreboard->getCountryName();
+  $scoreboard->PC_Phone = $data->PC_Phone;
 
-  // Create a New Score
-  $result = $scoreboard->create();
-
-  // Successful Score Creation
-  if($result['status'] == 'success') {
-    $scoreboard->id = intval($db->lastInsertId());
-    // Get Recently Inserted Row
-    $result = $scoreboard->readSingleByID()->fetch(PDO::FETCH_ASSOC);
-
-    $dateTime = new DatetimeConversion($result['playedAt']);
-    $date = $dateTime->getDate();
-    $time = $dateTime->getTime();
-
-    echo json_encode(
-      array(
-        "status" => "success",
-        "data" => array(
-          "id" => $result['id'],
-          "playedAt" => "$date at $time",
-          "countryName" => $result['countryName'],
-          "ipAddress" => $result['ipAddress']
-        )
-      )
-    );
-  } else {
-    echo json_encode(
-      array(
-        "status" => "failure"
-      )
-    );
+  // Exit if score insertion fails
+  if(!$scoreboard->create()) {
+    echo json_encode(['status' => 'failure', 'message' => 'Error saving the score']);
+    exit();
   }
+
+  $scoreboard->id = intval($db->lastInsertId());
+
+  // Get last inserted row stmt
+  $stmt = $scoreboard->readSingleByID();
+
+  // Exit if no score found
+  if(!$stmt->rowCount()) {
+    echo json_encode(['status' => 'failure', 'message' => 'Error getting the score']);
+    exit();
+  }
+
+  // Get last inserted row 
+  $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  $datetime = new DatetimeConversion($row['playedAt']);
+  $readableDatetime = $datetime->getDate().' at '.$datetime->getTime();
+
+  echo json_encode([
+    'status' => 'success',
+    'data' => [
+      'id' => $row['id'],
+      'playedAt' => $readableDatetime,
+      'countryName' => $row['countryName'],
+      'ipAddress' => $row['ipAddress']
+    ]
+  ]);
 ?>

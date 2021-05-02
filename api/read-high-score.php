@@ -1,4 +1,6 @@
 <?php
+  header('Content-type: application/json');
+
   include_once '../config/Database.php';
   include_once '../models/Scoreboard.php';
 
@@ -9,20 +11,25 @@
   // Instantiate Scoreboard Object
   $scoreboard = new Scoreboard($db);
 
+  // Get raw pasted data
+  $data = json_decode(file_get_contents('php://input'));
+
   // Set Properties
-  $scoreboard->gameSetPattern = $_POST['gameSet'];
-  $scoreboard->gamePitPattern = $_POST['gamePit'];
-  $scoreboard->gameLevelPattern = (int) $_POST['gameLevel'];
+  $scoreboard->gameSet = $data->gameSet;
+  $scoreboard->gamePit = $data->gamePit;
+  $scoreboard->gameLevel = $data->gameLevel;
 
-  // Get All Scores
-  $result = $scoreboard->readHighScore();
+  // Get high score stmt
+  $stmt = $scoreboard->readHighScore();
 
-  // Fetching Result
-  $result = $result->fetch(PDO::FETCH_ASSOC);
-
-  if(is_null($result['high_score'])) {
-    echo 0;
-  } else {
-    echo $result['high_score'];
+  // Exit if no score found
+  if(!$stmt->rowCount()) {
+    echo json_encode(['status' => 'failure', 'message' => 'Error getting the high score']);
+    exit();
   }
+
+  // Get high score row
+  $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  echo json_encode(['status' => 'success', 'data' => $row['high_score']]);
 ?>

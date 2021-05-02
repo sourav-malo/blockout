@@ -10,16 +10,16 @@ const setCookie = (cookieName, cookieValue, cookieExpiresDays) => {
 // function to get all blockout cookies
 const getBlockoutCookies = () => {
   let blockoutCookies = [];
-  const allCookies = document.cookie.split(';');
+  const cookies = document.cookie.split(';');
 
-  allCookies.forEach(eachCookie => {
-    const eachCookieName = eachCookie.trim().split('=')[0];
-    const eachCookieValue = eachCookie.trim().split('=')[1];
+  cookies.forEach(cookie => {
+    const cookieName = cookie.trim().split('=')[0];
+    const cookieValue = cookie.trim().split('=')[1];
 
-    if(eachCookieName.substring(0, 3) == "gID") {
+    if(cookieName.substring(0, 3) == "gID") {
       blockoutCookies.push({
-        name : eachCookieName,
-        value : eachCookieValue
+        name : cookieName,
+        value : cookieValue
       });
     }
   });
@@ -31,9 +31,9 @@ const getBlockoutCookies = () => {
 const getSingleBlockoutCookie = cookieName => {
   let cookieValue = '';
 
-  getBlockoutCookies().forEach(eachBlockoutCookie => {
-    if(eachBlockoutCookie.name == cookieName) {
-      cookieValue = eachBlockoutCookie.value;
+  getBlockoutCookies().forEach(cookie => {
+    if(cookie.name == cookieName) {
+      cookieValue = cookie.value;
     }
   });
 
@@ -45,18 +45,15 @@ const getMinBlockoutCookieScore = () => {
   let minScore = Number.POSITIVE_INFINITY;
   let minScoreID = null;
 
-  getBlockoutCookies().forEach(eachBlockoutCookie => {
-    const eachBlockoutCookieScore = parseInt(eachBlockoutCookie.value.split('|')[4]);
-    if(eachBlockoutCookieScore < minScore) {
-      minScore = eachBlockoutCookieScore;
-      minScoreID = eachBlockoutCookie.name;
+  getBlockoutCookies().forEach(cookie => {
+    const score = parseInt(cookie.value.split('|')[4]);
+    if(score < minScore) {
+      minScore = score;
+      minScoreID = cookie.name;
     }
   });
 
-  return {
-    minScoreID : minScoreID,
-    minScore : minScore
-  };
+  return { minScoreID, minScore };
 };
 
 // function to update blockout cookie
@@ -68,15 +65,16 @@ const createUpdateBlockoutCookie = () => {
 
 // functon to get last blockout cookie player name
 const getLastBlockoutCookiePlayerName = () => {
-  let lastPlayerName = '';
-  getBlockoutCookies().forEach(eachBlockoutCookie => {
-    const eachCookiePlayerName = eachBlockoutCookie.value.split('|')[0];
-    if(eachCookiePlayerName.length) {
-      lastPlayerName = eachCookiePlayerName;
+  let lastPlayer = '';
+  
+  getBlockoutCookies().forEach(cookie => {
+    const player = cookie.value.split('|')[0];
+    if(player.length) {
+      lastPlayer = player;
     }
   });
 
-  return lastPlayerName;
+  return lastPlayer;
 };
 
 // function to filter blockout cookie to keep saved max 100

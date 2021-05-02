@@ -14,7 +14,7 @@
     public $playedAt;
     public $countryName;
     public $cityName;
-    public $ipAddress;
+    public $ipAddress = '';
     public $PC_Phone;
 
     public $gameSetPattern;    
@@ -32,47 +32,41 @@
 
     // Read IP Address
     public function getIPAddress() {
-      $ipAddress = '';
-
       if(getenv('HTTP_CLIENT_IP')) {
-        $ipAddress = getenv('HTTP_CLIENT_IP');
+        $this->ipAddress = getenv('HTTP_CLIENT_IP');
       } else if(getenv('HTTP_X_FORWARDED_FOR')) {
-        $ipAddress = getenv('HTTP_X_FORWARDED_FOR');
+        $this->ipAddress = getenv('HTTP_X_FORWARDED_FOR');
       } else if(getenv('HTTP_X_FORWARDED')) {
-        $ipAddress = getenv('HTTP_X_FORWARDED');
+        $this->ipAddress = getenv('HTTP_X_FORWARDED');
       } else if(getenv('HTTP_FORWARDED_FOR')) {
-        $ipAddress = getenv('HTTP_FORWARDED_FOR');
+        $this->ipAddress = getenv('HTTP_FORWARDED_FOR');
       } else if(getenv('HTTP_FORWARDED')) {
-        $ipAddress = getenv('HTTP_FORWARDED');
+        $this->ipAddress = getenv('HTTP_FORWARDED');
       } else if(getenv('REMOTE_ADDR')) {
-        $ipAddress = getenv('REMOTE_ADDR');
+        $this->ipAddress = getenv('REMOTE_ADDR');
       } else {
-        $ipAddress = 'UNKNOWN';
+        $this->ipAddress = 'UNKNOWN';
       } 
-
-      return $ipAddress;
     }
 
     // Read Country Name by ipAddress
     public function getCountryName() {
-      $this->ipAddress = $this->getIPAddress();
-      if($this->ipAddress == 'UNKNOWN') {
-        return 'UNKWON';
-      } else {
-        $ipData = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=$this->ipAddress")); 
-        return $ipData->geoplugin_countryName;
-      }
+      $ipData = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=$this->ipAddress"));
+      $this->countryName = $ipData->geoplugin_countryName;
+
+      if(is_null($this->countryName) || empty($this->countryName)) {
+        $this->countryName = 'UNKNOWN';
+      } 
     }
 
     // Read City Name by ipAddress
     public function getCityName() {
-      $this->ipAddress = $this->getIPAddress();
-      if($this->ipAddress == 'UNKNOWN') {
-        return 'UNKWON';
-      } else {
-        $ipData = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=$this->ipAddress")); 
-        return $ipData->geoplugin_city;
-      }
+      $ipData = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=$this->ipAddress"));
+      $this->cityName = $ipData->geoplugin_city;
+
+      if(is_null($this->cityName) || empty($this->cityName)) {
+        $this->cityName = 'UNKNOWN';
+      } 
     }
 
     // Read High Score
@@ -82,19 +76,19 @@
         FROM
           $this->table
         WHERE
-          gameSet LIKE :gameSetPattern
+          gameSet = :gameSet
         AND
-          gamePit LIKE :gamePitPattern
+          gamePit = :gamePit
         AND
-          gameLevel LIKE :gameLevelPattern;";
+          gameLevel = :gameLevel;";
 
       // Prepare Statement
       $stmt = $this->conn->prepare($query);
 
       // Bind Data
-      $stmt->bindParam(':gameSetPattern', $this->gameSetPattern);
-      $stmt->bindParam(':gamePitPattern', $this->gamePitPattern);
-      $stmt->bindParam(':gameLevelPattern', $this->gameLevelPattern);
+      $stmt->bindParam(':gameSet', $this->gameSet);
+      $stmt->bindParam(':gamePit', $this->gamePit);
+      $stmt->bindParam(':gameLevel', $this->gameLevel);
 
       // Execute Statement
       $stmt->execute();
@@ -338,15 +332,10 @@
 
       // Execute Query
       if($stmt->execute()) {
-        return array(
-          "status" => "success",
-          "lastInsertID" => $this->conn->lastInsertID()
-        );
-      } else {
-        return array(
-          "status" => "failure"
-        );
+        return true;
       }
+
+      return false;
     }
   }
 ?>

@@ -37,7 +37,7 @@
                         <span id="sped_label_no"></span>
                     </span>
 
-                    <select name="speedSelect" id="speedSelect">
+                    <select onchange="updateHighScore()" name="speedSelect" id="speedSelect">
                         <option value='0' class="button on" selected>0</option> 
                         <option value='1' class="button">1</option> 
                         <option value='2' class="button">2</option> 
@@ -64,14 +64,14 @@
 	                <div id="high_score">&nbsp;</div>
 
 	                <span class="pit_label_text">PIT</span>
-	                <select name='pit' id="pit" title="Change pit size">
+	                <select onchange="updateHighScore()" name='pit' id="pit" title="Change pit size">
 	                       <option value='3x3x10' class="button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3x3x10</option> 
 	                       <option value='5x5x10' class="button on" selected>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5x5x10</option> 
 	                       <option value='5x5x12' class="button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5x5x12</option>
 	                </select>
 			    
 	                <span class="pieces_label_text">BLOCK SET</span>
-	                <select id="pieces" title="Change pieces complexity">
+	                <select onchange="updateHighScore()" id="pieces" title="Change pieces complexity">
                         <option value='Flat' class="button on" selected>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLAT</option> 
                         <option value='Basic' class="button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BASIC</option> 
                         <option value='Extended' class="button">&nbsp;&nbsp;EXTENDED</option>
@@ -145,10 +145,10 @@
             <div id="getGamerName" class="hud" style='display: none;'>
                 <h2>Game Over</h2>
                 <br />
-                <input name="username" placeholder="Name" class="username-input" id="username" autocomplete="off" autofocus>
+                <input oninput="validateUsername(event)" name="username" placeholder="Name" class="username-input" id="username" autocomplete="off" autofocus>
                 <br />
                 <span class="username-rule">Your name may contain only alphabets, digits and underscores </br> (max 20 characters)</span>
-                <button onclick="showScoreUI(event)" class="username-submit-btn">Save</button>
+                <button type="button" onclick="showScoreUI()" class="username-submit-btn">Save</button>
             </div>
 
             <div id="over" class="hud" style='display: none;'>
