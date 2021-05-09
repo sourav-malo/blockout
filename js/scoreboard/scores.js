@@ -19,7 +19,7 @@ function renderScores(scores, currentPageNo, maxRowsPerPage) {
       <span class="sb-col country">${score.countryName}</span>
       <span class="sb-col ip-address">
         <form action="location.php" method="POST">
-          <input type="hidden" name="ipAddress" value="${score.$ipAddress}">
+          <input type="hidden" name="ipAddress" value=${score.ipAddress}>
           <button class="ip-address-btn">${score.cityName}</button>
         </form>
       </span>
@@ -96,6 +96,8 @@ async function getScores(pageNoValue, selectedColumn, selectedColumnSortType) {
   });
 
   res = await res.json();
+
+  console.log(res);
 
   if(res.status != 'success') {
     renderTotalScoresCount(0);

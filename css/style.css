@@ -259,6 +259,7 @@ a.play-btn:hover {
   font-variant: small-caps;
   margin: 10px 0 10px;
   color: white;
+  position: relative;
 }
 
 .sb-filters-form {
@@ -312,8 +313,10 @@ a.play-btn:hover {
 }
 
 .total-scores-count-container {
-  margin-bottom: 20px;
-  text-align: right;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 14px;
 }
 

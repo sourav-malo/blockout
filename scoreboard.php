@@ -1,5 +1,3 @@
-<!-- sourav_malo :: Full Page Starts -->
-
 <?php
   include_once 'config/Database.php';
   include_once 'models/Scoreboard.php';
@@ -28,7 +26,14 @@
 </head>
 <body>
   <div class="scoreboard">
-    <u><h1 class="page-title">Global BlockOut Ranking</h1></u>
+    <u>
+      <h1 class="page-title">
+        Global BlockOut Ranking
+        <span class="total-scores-count-container">Total Scores: 
+          <span id="total-scores-count"></span>
+        </span>
+      </h1>
+    </u>
     <a href="index.php" class="play-btn"><< Back to Game <<</a>
     <div class="sb-filters">
       <form action="" method="POST" class="sb-filters-form" id="sbFiltersForm" onsubmit="filterScores(event)">
@@ -100,11 +105,6 @@
         <button class="sb-submit">VIEW</button>
       </form>
     </div>
-    <div class="total-scores-count-container">
-      <span>Total Scores: 
-        <span id="total-scores-count"></span>
-      </span>
-    </div>
     <div class="sb-panel" id="sbPanel">
       <div class="sb-table">
         <div class="sb-thead">
@@ -138,19 +138,9 @@
         </div>
       </div>
     </div>
+
     <!-- Pagination -->
-    <!-- <form class="pagination-form" id="pagination-form" method="POST">
-      <span class="page-count-container">
-        (<span class="cur-page-count" id="cur-page-count"></span>/<span class="total-page-count" id="total-page-count"></span>)
-      </span>
-      <input type="number" class="page-no-inp" id="page-no-inp"/>
-      <button class="pagination-btn">Go</button>
-    </form> -->
-    <ul class="pagination-items" id="pagination-items">
-      <!-- API Data Goes Here -->
-    </ul>
+    <ul class="pagination-items" id="pagination-items"></ul>
   </div>
 </body>
 </html>
-
-<!-- sourav_malo :: Full Page Ends -->

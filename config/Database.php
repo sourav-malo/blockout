@@ -15,7 +15,7 @@
     private $db_name = 'gamerea_cubeoutt';
     private $username = 'gamerea_cubeout';
     private $password = 'cubeoutmagi';
-    // private $conn;
+    private $conn;
 
     // DB Connect
     public function connect() {
