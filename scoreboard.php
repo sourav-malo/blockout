@@ -17,17 +17,21 @@
 <head>
   <meta name="description" content="Remake of classic puzzle game Blockout (3d tetris) in HTML 5" />
   <title>Global Scoreboard - BlockOut</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="css/style.css" />
   <link rel="icon" href="css/blockout.png" type="image/gif" sizes="16x16"> 
-  <script src="js/scoreboard.js" defer></script>
+  <script src="js/jquery-1.4.2.min.js" defer></script>
+  <script src="js/scoreboard/shared.js" defer></script>
+  <script src="js/scoreboard/scores.js" defer></script>
+  <script src="js/scoreboard/column-sorting.js" defer></script>
 </head>
 <body>
   <div class="scoreboard">
     <u><h1 class="page-title">Global BlockOut Ranking</h1></u>
     <a href="index.php" class="play-btn"><< Back to Game <<</a>
     <div class="sb-filters">
-      <form action="" method="POST" class="sb-filters-form" id="sbFiltersForm">
+      <form action="" method="POST" class="sb-filters-form" id="sbFiltersForm" onsubmit="filterScores(event)">
         <div class="input-group">
           <label for="set">Set:</label>
           <select id="set">
@@ -96,6 +100,11 @@
         <button class="sb-submit">VIEW</button>
       </form>
     </div>
+    <div class="total-scores-count-container">
+      <span>Total Scores: 
+        <span id="total-scores-count"></span>
+      </span>
+    </div>
     <div class="sb-panel" id="sbPanel">
       <div class="sb-table">
         <div class="sb-thead">
@@ -105,8 +114,20 @@
             <span class="sb-col set">Set</span>
             <span class="sb-col pit">Pit</span>
             <span class="sb-col level">Level</span>
-            <span class="sb-col score">Score</span>
-            <span class="sb-col played-at">Played At (UTC +0)</span>
+            <span class="sb-col score">
+              Score
+              <span onclick="handleColumnSorting(event)" data-sort-type="DESC" data-sort-col="playerScore" class="sort-icon-container">
+                <span class="sort-icon-asc"></span>
+                <span class="sort-icon-desc active"></span>
+              </span>
+            </span>
+            <span class="sb-col played-at">
+              Played At (UTC +0)
+              <span onclick="handleColumnSorting(event)" data-sort-type="DEFAULT" data-sort-col="playedAt" class="sort-icon-container">
+                <span class="sort-icon-asc"></span>
+                <span class="sort-icon-desc"></span>
+              </span>
+            </span>
             <span class="sb-col country">Country</span>
             <span class="sb-col ip-address">City</span>
             <span class="sb-col pc_phone">PC/Phone</span>
@@ -118,13 +139,16 @@
       </div>
     </div>
     <!-- Pagination -->
-    <form class="pagination-form" id="pagination-form" method="POST">
+    <!-- <form class="pagination-form" id="pagination-form" method="POST">
       <span class="page-count-container">
         (<span class="cur-page-count" id="cur-page-count"></span>/<span class="total-page-count" id="total-page-count"></span>)
       </span>
       <input type="number" class="page-no-inp" id="page-no-inp"/>
       <button class="pagination-btn">Go</button>
-    </form>
+    </form> -->
+    <ul class="pagination-items" id="pagination-items">
+      <!-- API Data Goes Here -->
+    </ul>
   </div>
 </body>
 </html>

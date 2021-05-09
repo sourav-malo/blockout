@@ -311,6 +311,16 @@ a.play-btn:hover {
   background-image: linear-gradient(to top, #2c6, #0b0);
 }
 
+.total-scores-count-container {
+  margin-bottom: 20px;
+  text-align: right;
+  font-size: 14px;
+}
+
+#total-scores-count {
+  font-weight: bold;
+}
+
 .sb-table {
   border: 1px solid #fff;
   font-size: 14px;
@@ -342,8 +352,17 @@ a.play-btn:hover {
   flex-basis: 8%;
 }
 
-.sb-col.ip-address, .sb-col.player, .sb-col.country, .sb-col.played-at {
-  flex-basis: 13%;
+.sb-col.country {
+  flex-basis: 10%;
+}
+
+.sb-col.ip-address {
+  flex-basis: 14%;
+}
+
+.sb-col.played-at,
+.sb-col.player {
+  flex-basis: 14%;
 }
 
 .first-row {
@@ -360,6 +379,44 @@ a.play-btn:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.sb-col.score,
+.sb-col.played-at {
+  display: flex;
+  align-items: center;
+}
+
+.sort-icon-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.sort-icon-asc,
+.sort-icon-desc {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.sort-icon-asc {
+  border-bottom: 10px solid rgba(255, 255, 255, .25);
+}
+
+.sort-icon-desc {
+  margin-top: 2.5px;
+  border-top: 10px solid rgba(255, 255, 255, .25);
+}
+
+.sort-icon-asc.active {
+  border-bottom-color: #2d7;
+}
+
+.sort-icon-desc.active {
+  border-top-color: #2d7;
 }
 
 .ip-address-btn {
@@ -465,7 +522,7 @@ a.play-btn:hover {
   border: 1px solid white;
 }
 
-.pagination-form {
+/* .pagination-form {
   margin: 40px 0;
   text-align: center;
 }
@@ -498,4 +555,31 @@ a.play-btn:hover {
 .pagination-btn:hover {
   cursor: pointer;
   background-color: rgba(247, 239, 41, .8);
+} */
+
+.pagination-items {
+  margin: 32px 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 20px;
+  background-color: rgba(0, 0, 0, .5);
+  border: 1px solid #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.pagination-item.active {
+  background-color: #009fa0;
+}
+
+.pagination-item + .pagination-item {
+  margin-left: 15px;
 }

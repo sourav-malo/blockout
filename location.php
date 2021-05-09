@@ -14,7 +14,6 @@
   <?php
     $ip = $_POST['ipAddress'];
     $ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip)); 
-  //  print_r($ipdat);
   ?>
   <div class="location">
     <h1 class="page-title">Player Geo Location, (zoom +/-)</h1>
@@ -52,20 +51,18 @@
     </div>
   </div>
   <script>
-    console.log(document.getElementById('lat').innerText);
-    console.log(document.getElementById('long').innerText);
-      mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FtZXJlYWxpdHkiLCJhIjoiY2tlbnhuMGF2MHlhNzMybzh1ZG82MHN0YSJ9.LNtKDkUGpA3ReHFpknDvpQ';
-      var map = new mapboxgl.Map({
-        container: 'location',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [document.getElementById('long').innerText, document.getElementById('lat').innerText],
-        zoom: 9
-      });
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FtZXJlYWxpdHkiLCJhIjoiY2tlbnhuMGF2MHlhNzMybzh1ZG82MHN0YSJ9.LNtKDkUGpA3ReHFpknDvpQ';
+    var map = new mapboxgl.Map({
+      container: 'location',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [document.getElementById('long').innerText, document.getElementById('lat').innerText],
+      zoom: 9
+    });
 
-      var popup = new mapboxgl.Popup({ closeOnClick: false })
-      .setLngLat([document.getElementById('long').innerText, document.getElementById('lat').innerText])
-      .setHTML('<h1>'+document.getElementById('region').innerText+'</h1>')
-      .addTo(map);
+    var popup = new mapboxgl.Popup({ closeOnClick: false })
+    .setLngLat([document.getElementById('long').innerText, document.getElementById('lat').innerText])
+    .setHTML('<h1>'+document.getElementById('region').innerText+'</h1>')
+    .addTo(map);
 </script>
 </body>
 </html>

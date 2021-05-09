@@ -24,6 +24,10 @@
     public $countryNamePattern;
     public $cityNamePattern;
     public $pageNoValue;
+    public $maxRowsPerPage;
+
+    public $selectedColumn;
+    public $selectedColumnSortType;
 
     // Constructor with DB
     public function __construct($db) {
@@ -55,7 +59,7 @@
       $this->countryName = $ipData->geoplugin_countryName;
 
       if(is_null($this->countryName) || empty($this->countryName)) {
-        $this->countryName = 'UNKNOWN';
+        $this->countryName = '';
       } 
     }
 
@@ -65,7 +69,7 @@
       $this->cityName = $ipData->geoplugin_city;
 
       if(is_null($this->cityName) || empty($this->cityName)) {
-        $this->cityName = 'UNKNOWN';
+        $this->cityName = '';
       } 
     }
 
@@ -135,8 +139,8 @@
     }
 
     // Read Scores
-    public function readPagination() {
-      $startRow = ($this->pageNoValue - 1) * 200;
+    public function readPage() {
+      $startRow = ($this->pageNoValue - 1) * $this->maxRowsPerPage;
 
       // Create Query
       $query = "SELECT *
@@ -155,9 +159,11 @@
         AND
           PC_Phone LIKE :devicePattern
         ORDER BY 
-          playerScore DESC
+          $this->selectedColumn $this->selectedColumnSortType
         LIMIT
-          $startRow, 200;";
+          $startRow, $this->maxRowsPerPage;";
+
+      // echo $query;
 
       // Prepare Statement
       $stmt = $this->conn->prepare($query);

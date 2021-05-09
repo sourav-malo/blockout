@@ -1,20 +1,20 @@
 <?php
   class Database {
     // DB Params
-    private $host = 'localhost';
-    private $db_name = 'gamearea_cubeout';
-    private $username = 'root';
-    private $password = '';
-    private $conn;
+    // private $host = 'localhost';
+    // private $db_name = 'gamearea_cubeout';
+    // private $username = 'root';
+    // private $password = '';
+    // private $conn;
     // private $host = 'localhost';
     // private $db_name = 'souravma_blockout';
     // private $username = 'souravma_blockout';
     // private $password = 'souravma_blockout';
     // private $conn;
-    // private $host = 'localhost';
-    // private $db_name = 'gamerea_cubeoutt';
-    // private $username = 'gamerea_cubeout';
-    // private $password = 'cubeoutmagi';
+    private $host = 'localhost';
+    private $db_name = 'gamerea_cubeoutt';
+    private $username = 'gamerea_cubeout';
+    private $password = 'cubeoutmagi';
     // private $conn;
 
     // DB Connect
