@@ -34,7 +34,7 @@
         </span>
       </h1>
     </u>
-    <a href="index.php" class="play-btn"><< Back to Game <<</a>
+    <a href="../blockout/" class="play-btn"><< Back to Game <<</a>
     <div class="sb-filters">
       <form action="" method="POST" class="sb-filters-form" id="sbFiltersForm" onsubmit="filterScores(event)">
         <div class="input-group">
