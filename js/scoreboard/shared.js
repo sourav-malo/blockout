@@ -5,6 +5,7 @@ var countries = $('#countries');
 var cities = $('#cities');
 var device = $('#device');
 var totalScoresCountSpan = $('#total-scores-count');
+var tablePreloaderContainer = $('#tablePreloaderContainer');
 var sbTbody = $('#sbTbody');
 var paginationItems = $('#pagination-items');
 

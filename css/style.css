@@ -368,11 +368,7 @@ a.play-btn:hover {
   flex-basis: 14%;
 }
 
-.first-row {
-  border-top: 1px solid #fff;
-}
-
-.first-row .sb-col.rank .circle {
+.ranked-first .sb-col.rank .circle {
   display: inline-block;
   width: 25px;
   height: 25px;
@@ -435,10 +431,39 @@ a.play-btn:hover {
   cursor: pointer;
 }
 
-.first-row, .first-row .ip-address-btn {
+.ranked-first, .ranked-first .ip-address-btn {
   color: #F7EF29;
   font-weight: 500;
 }
+
+.table-preloader-container {
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.table-preloader-container.hide {
+  display: none;
+}
+
+.table-preloader-icon {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border: 2px solid white;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: loader 1s ease-in-out infinite;
+}
+
+@keyframes loader {
+  0% {
+    transform: rotate(0);
+  } 100% {
+    transform: rotate(360deg);
+  }
+}
+
 
 /* sourav_malo :: Ask Username Styling */
 

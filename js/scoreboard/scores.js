@@ -2,13 +2,17 @@ function renderTotalScoresCount(totalScoresCount) {
   totalScoresCountSpan.text(totalScoresCount);
 }
 
-function renderScores(scores, currentPageNo, maxRowsPerPage) {
+function renderScores(scores) {
   sbTbody.html('');
+  tablePreloaderContainer.removeClass('hide');
+  window.scrollTo(0, 0);
 
   $.each(scores, function(index, score) {
-    sbTbody.append(`<div class="sb-row">
+    !tablePreloaderContainer.hasClass('hide') ? tablePreloaderContainer.addClass('hide') : null;
+
+    sbTbody.append(`<div class="sb-row ${score.rank == 1 ? 'ranked-first' : null}">
       <span class="sb-col rank">
-        <span class="circle">${((currentPageNo - 1) * maxRowsPerPage) + index + 1}</span>
+        <span class="circle">${score.rank}</span>
       </span>
       <span class="sb-col player">${score.playerName}</span>
       <span class="sb-col set">${score.gameSet}</span>
@@ -29,9 +33,13 @@ function renderScores(scores, currentPageNo, maxRowsPerPage) {
 }
 
 function renderPagination(leftmostPageNoInPagination, rightmostPageNoInPagination, currentPageNo, totalPages) {
+  var sortIconContainerSelected = $('.sort-icon-asc.active, .sort-icon-desc.active').closest('.sort-icon-container');
+  var columnNameSelected = sortIconContainerSelected.attr('data-sort-col');
+  var sortTypeSelected = sortIconContainerSelected.attr('data-sort-type');
+
   if(leftmostPageNoInPagination - 1 >= 1) {
     paginationItems.append(`
-      <li onclick="getScores(${leftmostPageNoInPagination - 1}, 'playerScore', 'DESC')" class="pagination-item">
+      <li onclick="getScores(${leftmostPageNoInPagination - 1}, '${columnNameSelected}', '${sortTypeSelected}')" class="pagination-item">
         <i class="fas fa-arrow-left"></i>
       </li>
     `);
@@ -39,7 +47,7 @@ function renderPagination(leftmostPageNoInPagination, rightmostPageNoInPaginatio
 
   for(var i = leftmostPageNoInPagination; i <= rightmostPageNoInPagination; i++) {
     paginationItems.append(`
-      <li onclick="getScores(${i}, 'playerScore', 'DESC')" class="pagination-item ${currentPageNo == i ? "active": null}">
+      <li onclick="getScores(${i}, '${columnNameSelected}', '${sortTypeSelected}')" class="pagination-item ${currentPageNo == i ? "active": null}">
         ${i}
       </li>
     `);
@@ -47,7 +55,7 @@ function renderPagination(leftmostPageNoInPagination, rightmostPageNoInPaginatio
 
   if(rightmostPageNoInPagination + 1 <= totalPages) {
     paginationItems.append(`
-      <li onclick="getScores(${rightmostPageNoInPagination + 1}, 'playerScore', 'DESC')" class="pagination-item">
+      <li onclick="getScores(${rightmostPageNoInPagination + 1}, '${columnNameSelected}', '${sortTypeSelected}')" class="pagination-item">
         <i class="fas fa-arrow-right"></i>
       </li>
     `);
@@ -97,8 +105,6 @@ async function getScores(pageNoValue, selectedColumn, selectedColumnSortType) {
 
   res = await res.json();
 
-  console.log(res);
-
   if(res.status != 'success') {
     renderTotalScoresCount(0);
     sbTbody.html('');
@@ -107,7 +113,7 @@ async function getScores(pageNoValue, selectedColumn, selectedColumnSortType) {
   }  
 
   renderTotalScoresCount(res.data.totalRows);
-  renderScores(res.data.scoresInCurrentPage, res.data.currentPageNo, res.data.maxRowsPerPage);
+  renderScores(res.data.scoresInCurrentPage);
   handlePagination(res.data.totalPages, res.data.currentPageNo);
 }
 

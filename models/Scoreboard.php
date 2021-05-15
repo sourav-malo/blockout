@@ -119,7 +119,7 @@
         AND
           PC_Phone LIKE :devicePattern
         ORDER BY 
-          playerScore DESC;";
+          playerScore DESC, playedAt ASC;";
 
       // Prepare Statement
       $stmt = $this->conn->prepare($query);

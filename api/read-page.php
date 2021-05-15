@@ -49,7 +49,20 @@
 
     $row['cityName'] = empty($row['cityName']) ? 'Gamer Position' : $row['cityName'];
 
+    // Get all scores stmt
+    $stmtAll = $scoreboard->read();
+
+    // instantiate rank
+    $rank = 1;
+
+    while($rowAll = $stmtAll->fetch(PDO::FETCH_ASSOC)) {
+      if($rowAll['id'] == $row['id']) break;
+
+      $rank++;
+    }
+
     $result[] = [
+      'rank' => $rank,
       'playerName' => $row['playerName'],
       'gameSet' => $row['gameSet'],
       'gamePit' => $row['gamePit'],

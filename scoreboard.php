@@ -133,9 +133,10 @@
             <span class="sb-col pc_phone">PC/Phone</span>
           </div>
         </div>
-        <div class="sb-tbody" id="sbTbody">
-          
+        <div class="table-preloader-container" id="tablePreloaderContainer">
+          <span class="table-preloader-icon"></span>
         </div>
+        <div class="sb-tbody" id="sbTbody"></div>
       </div>
     </div>
 
