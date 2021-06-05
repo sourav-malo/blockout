@@ -1180,7 +1180,7 @@ var LINEWIDTH_PIT = 0.35;
 var SPEED = 0;
 var GAME_SPEED = SPEED;
 var SPEED_MAP = {
-  0: 0,
+  0: 4000,
   1: 2000,
   2: 1000,
   3: 500,
